@@ -1,0 +1,704 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Brand */
+  --brand-900: #064e3b;
+  --brand-800: #0b5a46;
+  --accent-600: #d6b25e;
+  --accent-700: #a37316;
+
+  /* Light theme */
+  --bg: #f7fafc;
+  --bg2: #f1f5f9;
+  --surface: rgba(255, 255, 255, 0.80);
+  --surface-strong: rgba(255, 255, 255, 0.92);
+  --border: rgba(15, 23, 42, 0.10);
+  --text: #0f172a;
+  --muted: #475569;
+  --shadow-lg: 0 26px 70px rgba(2, 6, 23, 0.14);
+  --shadow-md: 0 14px 34px rgba(2, 6, 23, 0.12);
+  --shadow-sm: 0 10px 22px rgba(2, 6, 23, 0.10);
+
+  /* Component tokens */
+  --header-grad: radial-gradient(900px 220px at 10% 10%, rgba(214, 178, 94, 0.24), transparent 55%),
+    radial-gradient(900px 240px at 95% 0%, rgba(6, 78, 59, 0.18), transparent 60%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.48));
+  --pill-bg: rgba(255, 255, 255, 0.65);
+  --pill-border: rgba(15, 23, 42, 0.12);
+  --table-head-bg: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.92));
+  --row-sep: rgba(255, 255, 255, 0.85);
+  --today-border: rgba(214, 178, 94, 0.95);
+  --today-tint: rgba(214, 178, 94, 0.14);
+
+  /* Back-compat vars used throughout file */
+  --primary-green: var(--brand-900);
+  --secondary-green: var(--brand-800);
+  --gold: var(--accent-600);
+  --gold-light: rgba(214, 178, 94, 0.18);
+  --gold-dark: var(--accent-700);
+  --text-dark: var(--text);
+  --text-muted: var(--muted);
+  --bg-color: var(--bg);
+  --surface-solid: #ffffff;
+  --shadow: var(--shadow-lg);
+  --shadow-soft: var(--shadow-sm);
+}
+
+[data-theme='dark'] {
+  --bg: #060b11;
+  --bg2: #0b1220;
+  --surface: rgba(15, 23, 42, 0.62);
+  --surface-strong: rgba(15, 23, 42, 0.78);
+  --border: rgba(226, 232, 240, 0.12);
+  --text: #e5e7eb;
+  --muted: rgba(226, 232, 240, 0.76);
+  --shadow-lg: 0 28px 86px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 10px 28px rgba(0, 0, 0, 0.35);
+
+  --header-grad: radial-gradient(900px 220px at 10% 10%, rgba(214, 178, 94, 0.18), transparent 55%),
+    radial-gradient(900px 240px at 95% 0%, rgba(16, 185, 129, 0.12), transparent 60%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.65), rgba(2, 6, 23, 0.35));
+  --pill-bg: rgba(2, 6, 23, 0.35);
+  --pill-border: rgba(226, 232, 240, 0.14);
+  --table-head-bg: linear-gradient(180deg, rgba(15, 23, 42, 0.78), rgba(2, 6, 23, 0.52));
+  --row-sep: rgba(2, 6, 23, 0.55);
+  --today-border: rgba(214, 178, 94, 0.92);
+  --today-tint: rgba(214, 178, 94, 0.10);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*:focus-visible {
+  outline: 3px solid rgba(214, 178, 94, 0.55);
+  outline-offset: 3px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.14) 1px, transparent 0),
+    radial-gradient(circle at 14px 14px, rgba(16, 185, 129, 0.12) 1px, transparent 0),
+    radial-gradient(1200px 620px at 20% -10%, rgba(214, 178, 94, 0.12), transparent 60%),
+    radial-gradient(900px 520px at 90% 10%, rgba(16, 185, 129, 0.10), transparent 60%),
+    linear-gradient(180deg, rgba(6, 78, 59, 0.12), rgba(214, 178, 94, 0.06));
+  background-size: 28px 28px, 28px 28px, 100% 100%, 100% 100%, 100% 100%;
+  color: var(--text-dark);
+  min-height: 100vh;
+  transition: background-color 220ms ease, color 220ms ease;
+}
+
+.urdu-font {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  direction: rtl;
+  unicode-bidi: plaintext;
+  letter-spacing: 0;
+  text-rendering: optimizeLegibility;
+}
+
+.ramadan-app {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Header Section */
+.main-header {
+  text-align: center;
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.topbar {
+  background: var(--header-grad);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 18px 18px;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.title-group {
+  min-width: 0;
+}
+
+.subline {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dot {
+  opacity: 0.55;
+  color: var(--text-dark);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.today-pill {
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  color: var(--text-dark);
+  font-weight: 700;
+  font-size: 0.92rem;
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.10);
+  backdrop-filter: blur(10px);
+}
+
+.theme-toggle {
+  cursor: pointer;
+  appearance: none;
+  border: 1px solid var(--pill-border);
+  background: var(--pill-bg);
+  color: var(--text-dark);
+  border-radius: 999px;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.10);
+  transition: transform 120ms ease, background-color 220ms ease, color 220ms ease, border-color 220ms ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.theme-toggle:active {
+  transform: translateY(0);
+}
+
+.toggle-track {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  position: relative;
+  background: rgba(2, 6, 23, 0.12);
+  border: 1px solid rgba(2, 6, 23, 0.12);
+}
+
+[data-theme='dark'] .toggle-track {
+  background: rgba(214, 178, 94, 0.18);
+  border-color: rgba(214, 178, 94, 0.22);
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(226, 232, 240, 0.90));
+  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.18);
+  transition: left 220ms ease;
+}
+
+[data-theme='dark'] .toggle-thumb {
+  left: 23px;
+  background: linear-gradient(180deg, rgba(214, 178, 94, 0.95), rgba(163, 115, 22, 0.90));
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.35);
+}
+
+.toggle-label {
+  font-size: 0.92rem;
+}
+
+.header-decoration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.urdu-title {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  font-size: 3.5rem;
+  color: var(--primary-green);
+  margin-bottom: -10px;
+  line-height: 1.25;
+  word-break: keep-all;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.english-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.year-info {
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.icon-lantern {
+  color: var(--gold);
+  filter: drop-shadow(0 12px 20px rgba(163, 115, 22, 0.22));
+  flex-shrink: 0;
+  transform: translateY(1px);
+}
+
+.corner-lantern {
+  position: absolute;
+  top: -12px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.corner-lantern-left {
+  left: 12px;
+}
+
+.corner-lantern-right {
+  right: 12px;
+}
+
+.corner-lantern-icon {
+  color: var(--gold);
+  opacity: 0.32;
+  filter:
+    drop-shadow(0 14px 26px rgba(15, 23, 42, 0.55))
+    drop-shadow(0 0 22px rgba(214, 178, 94, 0.45));
+  animation: lanternGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes lanternGlow {
+  0% {
+    opacity: 0.16;
+    transform: translateY(0) scale(0.96);
+  }
+
+  100% {
+    opacity: 0.38;
+    transform: translateY(2px) scale(1.03);
+  }
+}
+
+.animate-swing {
+  animation: swing 3s ease-in-out infinite;
+}
+
+.animate-swing-alt {
+  animation: swing 3.5s ease-in-out infinite reverse;
+}
+
+@keyframes swing {
+
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+/* Dua Cards */
+.dua-section {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+}
+
+.dua-card {
+  flex: 1;
+  min-width: 350px;
+  background:
+    radial-gradient(900px 240px at 10% 0%, rgba(214, 178, 94, 0.22), transparent 60%),
+    radial-gradient(700px 220px at 90% 15%, rgba(16, 185, 129, 0.18), transparent 55%),
+    linear-gradient(135deg, #064e3b, #0b5a46);
+  color: #f8fafc;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(214, 178, 94, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+.dua-card:nth-child(2) {
+  background:
+    radial-gradient(900px 240px at 10% 0%, rgba(214, 178, 94, 0.25), transparent 60%),
+    radial-gradient(700px 220px at 90% 15%, rgba(6, 95, 70, 0.22), transparent 55%),
+    linear-gradient(135deg, #0b3b2f, #064e3b);
+  border-color: rgba(214, 178, 94, 0.55);
+}
+
+.dua-card h3 {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 10px;
+}
+
+.arabic-dua {
+  font-family: 'Amiri', serif;
+  font-size: 1.6rem;
+  line-height: 1.8;
+  text-align: center;
+  margin-bottom: 15px;
+  direction: rtl;
+}
+
+.translation {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Calendar Tables */
+.content-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.tables-wrapper {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.calendar-table-container {
+  flex: 1;
+  min-width: 500px;
+  background: var(--surface-strong);
+  padding: 15px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.table-header-info {
+  background:
+    radial-gradient(800px 120px at 10% 20%, rgba(214, 178, 94, 0.35), transparent 55%),
+    linear-gradient(135deg, #064e3b, #0b5a46);
+  color: #f8fafc;
+  padding: 12px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  border-radius: 12px 12px 10px 10px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(214, 178, 94, 0.30);
+}
+
+.table-header-info svg {
+  vertical-align: -0.18em;
+  margin-right: 8px;
+  opacity: 0.95;
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.calendar-table th {
+  padding: 12px 8px;
+  background: var(--table-head-bg);
+  color: var(--text);
+  font-weight: 700;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.calendar-table td {
+  padding: 12px 8px;
+  text-align: center;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.calendar-table tbody tr {
+  transition: transform 140ms ease, filter 180ms ease;
+}
+
+.calendar-table tbody tr:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.05);
+}
+
+.date-cell {
+  font-weight: 800;
+  color: var(--text);
+  font-size: 1.06rem;
+  letter-spacing: 0.2px;
+}
+
+/* Today highlight (clean border + subtle tint) */
+.calendar-table tr.is-today td {
+  background-image: linear-gradient(0deg, var(--today-tint), var(--today-tint));
+  box-shadow: inset 0 0 0 2px var(--today-border);
+}
+
+.calendar-table tr.is-today td:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.calendar-table tr.is-today td:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.calendar-table tr.is-today .date-cell {
+  font-weight: 900;
+}
+
+/* Row colors matching image */
+.color-row-1 {
+  background-color: rgba(16, 185, 129, 0.14);
+}
+
+/* Greenish */
+.color-row-2 {
+  background-color: rgba(214, 178, 94, 0.18);
+}
+
+/* Yellowish */
+.color-row-3 {
+  background-color: rgba(6, 95, 70, 0.10);
+}
+
+/* Purplish */
+.color-row-4 {
+  background-color: rgba(245, 158, 11, 0.12);
+}
+
+/* Orangish */
+.color-row-5 {
+  background-color: rgba(14, 165, 233, 0.10);
+}
+
+/* Bluish */
+
+.time-cell {
+  font-family: 'Amiri', serif;
+  font-size: 1.4rem;
+  color: var(--text);
+}
+
+/* Seperator like image */
+.calendar-table tr {
+  border-bottom: 6px solid var(--row-sep);
+}
+
+.ramadan-num {
+  font-size: 1.2rem;
+  color: #991b1b;
+}
+
+.day-cell {
+  color: #0b5a46;
+}
+
+/* Ads */
+.ad-sidebar {
+  position: sticky;
+  top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ad-card {
+  background: var(--surface-strong);
+  border-radius: 16px;
+  padding: 14px 14px 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  transition: transform 140ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.ad-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.ad-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  background: rgba(214, 178, 94, 0.18);
+  border: 1px solid rgba(214, 178, 94, 0.35);
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.ad-title {
+  margin-top: 10px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.ad-line {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.ad-link {
+  color: #0b5a46;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+[data-theme='dark'] .ad-link {
+  color: rgba(214, 178, 94, 0.95);
+}
+
+.ad-link:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+.main-footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 30px;
+  color: var(--text-muted);
+}
+
+.footer-icons {
+  margin-top: 15px;
+  font-size: 2rem;
+  color: var(--gold);
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.footer-icons svg {
+  opacity: 0.92;
+  filter: drop-shadow(0 10px 18px rgba(163, 115, 22, 0.10));
+}
+
+@media (max-width: 1100px) {
+  .content-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ad-sidebar {
+    position: static;
+  }
+
+  .calendar-table-container {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .ramadan-app {
+    padding: 22px 14px;
+  }
+
+  .topbar {
+    padding: 14px 12px;
+    border-radius: 18px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .brand {
+    justify-content: center;
+  }
+
+  .topbar-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .icon-lantern {
+    transform: translateY(0);
+  }
+
+  .corner-lantern {
+    top: -4px;
+  }
+
+  .corner-lantern-icon {
+    font-size: 2.4rem;
+    opacity: 0.26;
+  }
+
+  .urdu-title {
+    font-size: 2.25rem;
+    line-height: 1.35;
+    margin-bottom: -2px;
+  }
+
+  .english-title {
+    font-size: 1.4rem;
+  }
+
+  .dua-card {
+    min-width: 100%;
+  }
+
+  .calendar-table td,
+  .calendar-table th {
+    padding: 8px 4px;
+    font-size: 0.85rem;
+  }
+
+  .time-cell {
+    font-size: 1.1rem;
+  }
+
+  .date-cell {
+    font-size: 0.98rem;
+  }
+
+  .calendar-table tr.is-today td {
+    box-shadow: inset 0 0 0 2px var(--today-border);
+  }
+}
