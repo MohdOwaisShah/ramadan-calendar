@@ -72,6 +72,24 @@ function isSameLocalDay(a, b) {
   );
 }
 
+function parseTimeHM(timeStr) {
+  const [hRaw, mRaw] = String(timeStr).trim().split(':');
+  const h = Number.parseInt(hRaw, 10);
+  const m = Number.parseInt(mRaw, 10);
+  if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+  return { h, m };
+}
+
+function formatCountdown(ms) {
+  const safe = Math.max(0, Math.floor(ms));
+  const totalSeconds = Math.floor(safe / 1000);
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
 function App() {
   const getInitialTheme = () => {
     try {
@@ -98,9 +116,47 @@ function App() {
     }
   }, [theme]);
 
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
   const today = useMemo(() => new Date(), []);
-  const baseYear = today.getFullYear();
+  const baseYear = now.getFullYear();
   const todayLabel = useMemo(() => today.toLocaleDateString(undefined, { day: '2-digit', month: 'short' }), [today]);
+
+  const allRamadanRows = useMemo(() => [...ramadanData, ...ramadanDataPhase2], []);
+
+  const nextSehri = useMemo(() => {
+    const candidates = [];
+    for (const row of allRamadanRows) {
+      const d = parseDayMonth(row.date, baseYear);
+      const t = parseTimeHM(row.sehri);
+      if (!d || !t) continue;
+      const dt = new Date(d.getFullYear(), d.getMonth(), d.getDate(), t.h, t.m, 0, 0);
+      if (dt > now) candidates.push({ dt, row });
+    }
+    candidates.sort((a, b) => a.dt - b.dt);
+    return candidates[0] || null;
+  }, [allRamadanRows, baseYear, now]);
+
+  const nextIftar = useMemo(() => {
+    const candidates = [];
+    for (const row of allRamadanRows) {
+      const d = parseDayMonth(row.date, baseYear);
+      const t = parseTimeHM(row.iftar);
+      if (!d || !t) continue;
+      const iftarHour = t.h < 12 ? t.h + 12 : t.h;
+      const dt = new Date(d.getFullYear(), d.getMonth(), d.getDate(), iftarHour, t.m, 0, 0);
+      if (dt > now) candidates.push({ dt, row });
+    }
+    candidates.sort((a, b) => a.dt - b.dt);
+    return candidates[0] || null;
+  }, [allRamadanRows, baseYear, now]);
+
+  const sehriCountdown = nextSehri ? formatCountdown(nextSehri.dt - now) : null;
+  const iftarCountdown = nextIftar ? formatCountdown(nextIftar.dt - now) : null;
 
   const shopAd = {
     title: 'Laptop & Mobile Repair',
@@ -159,6 +215,35 @@ function App() {
       </header>
 
       <main className="calendar-container">
+        <section className="countdown-card" aria-label="Countdown">
+          <div className="countdown-header">
+            <div className="countdown-title urdu-font" lang="ur" dir="rtl">
+              وقت باقی ہے
+            </div>
+            <div className="countdown-subtitle">Countdown to Sehri & Iftar</div>
+          </div>
+
+          <div className="countdown-grid">
+            <div className="countdown-tile">
+              <div className="countdown-tile-label">Sehri</div>
+              <div className="countdown-tile-time">{nextSehri?.row?.sehri ?? '--:--'}</div>
+              <div className="countdown-tile-value">{sehriCountdown ?? '--:--:--'}</div>
+              <div className="countdown-tile-meta">
+                {nextSehri?.row?.date ? `Next: ${nextSehri.row.date}` : 'Not available'}
+              </div>
+            </div>
+
+            <div className="countdown-tile">
+              <div className="countdown-tile-label">Iftar</div>
+              <div className="countdown-tile-time">{nextIftar?.row?.iftar ?? '--:--'}</div>
+              <div className="countdown-tile-value">{iftarCountdown ?? '--:--:--'}</div>
+              <div className="countdown-tile-meta">
+                {nextIftar?.row?.date ? `Next: ${nextIftar.row.date}` : 'Not available'}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <div className="dua-section">
           <div className="dua-card">
             <h3 className="urdu-font" lang="ur" dir="rtl">
