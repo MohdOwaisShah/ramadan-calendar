@@ -217,9 +217,6 @@ function App() {
       <main className="calendar-container">
         <section className="countdown-card" aria-label="Countdown">
           <div className="countdown-header">
-            <div className="countdown-title urdu-font" lang="ur" dir="rtl">
-              وقت باقی ہے
-            </div>
             <div className="countdown-subtitle">Countdown to Sehri & Iftar</div>
           </div>
 
