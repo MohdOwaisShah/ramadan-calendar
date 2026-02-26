@@ -291,8 +291,7 @@ body {
   color: var(--gold);
   opacity: 0.32;
   filter:
-    drop-shadow(0 14px 26px rgba(15, 23, 42, 0.55))
-    drop-shadow(0 0 22px rgba(214, 178, 94, 0.45));
+    drop-shadow(0 14px 26px rgba(15, 23, 42, 0.55)) drop-shadow(0 0 22px rgba(214, 178, 94, 0.45));
   animation: lanternGlow 4s ease-in-out infinite alternate;
 }
 
@@ -413,6 +412,29 @@ body {
   color: var(--muted);
   font-weight: 700;
   font-size: 0.92rem;
+}
+
+.sound-hint {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gold-dark);
+  background: var(--gold-light);
+  padding: 4px 10px;
+  border-radius: 999px;
+  animation: pulseHint 3s infinite;
+}
+
+@keyframes pulseHint {
+
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
 }
 
 .countdown-grid {
@@ -793,5 +815,54 @@ body {
 
   .calendar-table tr.is-today td {
     box-shadow: inset 0 0 0 2px var(--today-border);
+  }
+}
+
+/* Adhan Stop Button Styling */
+.adhan-stop-overlay {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stop-adhan-btn {
+  background: linear-gradient(135deg, #991b1b, #dc2626);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 10px 40px rgba(153, 27, 27, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stop-adhan-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 48px rgba(153, 27, 27, 0.55);
+}
+
+.stop-adhan-btn:active {
+  transform: translateY(1px);
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 }

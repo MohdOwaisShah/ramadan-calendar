@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import './App.css';
 import { FaCloudMoon, FaMoon, FaMosque } from 'react-icons/fa6';
 import { GiOldLantern } from 'react-icons/gi';
@@ -11,7 +11,7 @@ const ramadanData = [
   { day: 'Monday', urduDay: 'پیر', ramadan: 5, date: '23 Feb', sehri: '5:39', iftar: '6:45' },
   { day: 'Tuesday', urduDay: 'منگل', ramadan: 6, date: '24 Feb', sehri: '5:38', iftar: '6:45' },
   { day: 'Wednesday', urduDay: 'بدھ', ramadan: 7, date: '25 Feb', sehri: '5:37', iftar: '6:45' },
-  { day: 'Thursday', urduDay: 'جمعرات', ramadan: 8, date: '26 Feb', sehri: '5:37', iftar: '6:46' },
+  { day: 'Thursday', urduDay: 'جمعرات', ramadan: 8, date: '26 Feb', sehri: '05:37', iftar: '6:46' },
   { day: 'Friday', urduDay: 'جمعہ', ramadan: 9, date: '27 Feb', sehri: '5:36', iftar: '6:46' },
   { day: 'Saturday', urduDay: 'سنیچر', ramadan: 10, date: '28 Feb', sehri: '5:36', iftar: '6:46' },
   { day: 'Sunday', urduDay: 'اتوار', ramadan: 11, date: '01 Mar', sehri: '5:35', iftar: '6:47' },
@@ -117,6 +117,38 @@ function App() {
   }, [theme]);
 
   const [now, setNow] = useState(() => new Date());
+  const [audioPlaying, setAudioPlaying] = useState(null); // 'sehri' | 'iftar' | null
+  const [hasInteracted, setHasInteracted] = useState(false); // Track user interaction for audio
+  const sehriAudioRef = useRef(null);
+  const iftarAudioRef = useRef(null);
+
+  useEffect(() => {
+    sehriAudioRef.current = new Audio('/adhan/sehri-adhan.mp3');
+    iftarAudioRef.current = new Audio('/adhan/iftar-adhan.mp3');
+
+    return () => {
+      if (sehriAudioRef.current) {
+        sehriAudioRef.current.pause();
+        sehriAudioRef.current = null;
+      }
+      if (iftarAudioRef.current) {
+        iftarAudioRef.current.pause();
+        iftarAudioRef.current = null;
+      }
+    };
+  }, []);
+
+  const handleUserInteraction = () => {
+    if (!hasInteracted) {
+      setHasInteracted(true);
+      // Play and immediately pause to unlock audio context on mobile/some browsers
+      sehriAudioRef.current?.play().then(() => {
+        sehriAudioRef.current?.pause();
+        if (sehriAudioRef.current) sehriAudioRef.current.currentTime = 0;
+      }).catch(e => console.log("Audio unlock failed/ignored", e));
+    }
+  };
+
   useEffect(() => {
     const id = window.setInterval(() => setNow(new Date()), 1000);
     return () => window.clearInterval(id);
@@ -155,8 +187,34 @@ function App() {
     return candidates[0] || null;
   }, [allRamadanRows, baseYear, now]);
 
-  const sehriCountdown = nextSehri ? formatCountdown(nextSehri.dt - now) : null;
-  const iftarCountdown = nextIftar ? formatCountdown(nextIftar.dt - now) : null;
+  const sehriRemaining = nextSehri ? nextSehri.dt - now : null;
+  const iftarRemaining = nextIftar ? nextIftar.dt - now : null;
+
+  const sehriCountdown = sehriRemaining !== null ? formatCountdown(sehriRemaining) : null;
+  const iftarCountdown = iftarRemaining !== null ? formatCountdown(iftarRemaining) : null;
+
+  // Trigger Adhan logic
+  useEffect(() => {
+    if (sehriRemaining !== null && Math.floor(sehriRemaining / 1000) === 0 && !audioPlaying) {
+      setAudioPlaying('sehri');
+      sehriAudioRef.current?.play().catch(err => console.error("Error playing Sehri Adhan:", err));
+    }
+    if (iftarRemaining !== null && Math.floor(iftarRemaining / 1000) === 0 && !audioPlaying) {
+      setAudioPlaying('iftar');
+      iftarAudioRef.current?.play().catch(err => console.error("Error playing Iftar Adhan:", err));
+    }
+  }, [sehriRemaining, iftarRemaining, audioPlaying]);
+
+  const stopAdhan = () => {
+    if (audioPlaying === 'sehri') {
+      sehriAudioRef.current?.pause();
+      if (sehriAudioRef.current) sehriAudioRef.current.currentTime = 0;
+    } else if (audioPlaying === 'iftar') {
+      iftarAudioRef.current?.pause();
+      if (iftarAudioRef.current) iftarAudioRef.current.currentTime = 0;
+    }
+    setAudioPlaying(null);
+  };
 
   const shopAd = {
     title: 'Laptop & Mobile Repair',
@@ -195,13 +253,26 @@ function App() {
           </div>
 
           <div className="topbar-actions">
+            {!hasInteracted && (
+              <button
+                type="button"
+                className="today-pill"
+                onClick={handleUserInteraction}
+                style={{ cursor: 'pointer', backgroundColor: 'var(--gold-light)' }}
+              >
+                Enable Adhan Audio
+              </button>
+            )}
             <div className="today-pill" title="Today">
               Today: {todayLabel}
             </div>
             <button
               type="button"
               className="theme-toggle"
-              onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+              onClick={() => {
+                setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+                handleUserInteraction(); // Also count theme toggle as interaction
+              }}
               aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
               title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
             >
@@ -280,11 +351,11 @@ function App() {
                     const isToday = rowDate ? isSameLocalDay(rowDate, today) : false;
                     return (
                       <tr key={idx} className={`color-row-${(idx % 5) + 1} ${isToday ? 'is-today' : ''}`}>
-                      <td className="time-cell iftar">{row.iftar}</td>
-                      <td className="time-cell sehri">{row.sehri}</td>
-                      <td className="date-cell">{row.date}</td>
-                      <td className="ramadan-num">{row.ramadan}</td>
-                      <td className="urdu-font day-cell" lang="ur" dir="rtl">{row.urduDay}</td>
+                        <td className="time-cell iftar">{row.iftar}</td>
+                        <td className="time-cell sehri">{row.sehri}</td>
+                        <td className="date-cell">{row.date}</td>
+                        <td className="ramadan-num">{row.ramadan}</td>
+                        <td className="urdu-font day-cell" lang="ur" dir="rtl">{row.urduDay}</td>
                       </tr>
                     );
                   })}
@@ -312,11 +383,11 @@ function App() {
                     const isToday = rowDate ? isSameLocalDay(rowDate, today) : false;
                     return (
                       <tr key={idx} className={`color-row-${((idx + 15) % 5) + 1} ${isToday ? 'is-today' : ''}`}>
-                      <td className="time-cell iftar">{row.iftar}</td>
-                      <td className="time-cell sehri">{row.sehri}</td>
-                      <td className="date-cell">{row.date}</td>
-                      <td className="ramadan-num">{row.ramadan}</td>
-                      <td className="urdu-font day-cell" lang="ur" dir="rtl">{row.urduDay}</td>
+                        <td className="time-cell iftar">{row.iftar}</td>
+                        <td className="time-cell sehri">{row.sehri}</td>
+                        <td className="date-cell">{row.date}</td>
+                        <td className="ramadan-num">{row.ramadan}</td>
+                        <td className="urdu-font day-cell" lang="ur" dir="rtl">{row.urduDay}</td>
                       </tr>
                     );
                   })}
@@ -368,6 +439,28 @@ function App() {
           <FaCloudMoon size={32} />
         </div>
       </footer>
+
+      {audioPlaying && (
+        <div className="adhan-popup-overlay">
+          <div className="adhan-popup-card">
+            <div className="adhan-popup-icon-pulse">
+              <FaMosque size={48} />
+            </div>
+            <h2 className="urdu-font" lang="ur" dir="rtl">
+              {audioPlaying === 'sehri' ? 'سحری کا وقت ہو گیا ہے' : 'افطار کا وقت ہو گیا ہے'}
+            </h2>
+            <h3 className="adhan-popup-title">
+              {audioPlaying === 'sehri' ? 'It\'s Time for Sehri' : 'It\'s Time for Iftar'}
+            </h3>
+            <p className="adhan-popup-msg">
+              The Adhan is playing. May Allah accept your fasts.
+            </p>
+            <button className="stop-adhan-btn" onClick={stopAdhan}>
+              Stop Adhan
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
